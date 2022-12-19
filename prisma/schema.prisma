@@ -1,0 +1,26 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://maxime@localhost:5432"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Authenticator {
+  id                  String @id @default(cuid())
+  userId              String
+  credentialId        Bytes
+  credentialPublicKey Bytes
+  counter             BigInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id             String           @id @default(cuid())
+  name           String?
+  email          String?          @unique
+  authenticator Authenticator[]
+  currentChallenger String?
+}
